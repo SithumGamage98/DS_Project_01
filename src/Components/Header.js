@@ -41,6 +41,9 @@ export default function Header() {
               <MDBNavbarItem>
                 <MDBNavbarLink href='#'>Delivery Services</MDBNavbarLink>
               </MDBNavbarItem>
+               <MDBNavbarItem>
+                <MDBNavbarLink href='#'>Contact Us</MDBNavbarLink>
+              </MDBNavbarItem>
               <MDBNavbarItem>
                 <MDBNavbarLink href='#'>About Us</MDBNavbarLink>
               </MDBNavbarItem>
