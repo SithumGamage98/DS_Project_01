@@ -6,16 +6,10 @@ import Header from './Components/Header';
 
 function App() {
   return (
-
   <div>
-
     <Header/>
     <Footer/>
-    
-
-  </div>
-   
-    
+  </div> 
   )
 }
 
