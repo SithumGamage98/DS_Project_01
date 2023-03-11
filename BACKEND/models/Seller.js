@@ -5,8 +5,6 @@ const router = require('../routes/seller_items');
 
 const sellerItemScheama = new mongoose.Schema({
 
- 
-
     product_name :{
 
      type : String,
