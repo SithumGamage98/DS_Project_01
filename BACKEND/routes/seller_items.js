@@ -7,13 +7,15 @@ const router=express.Router();
 //Add items
 router.route("/add").post((req,res)=>{
 
+ const product_id = req.body.product_id;
  const product_name = req.body.product_name; 
  const description = req.body.description; 
  const price = req.body.price;
 
 
  const newItem = new Seller({
-
+  
+  product_id,
   product_name,
   description,
   price,
@@ -33,72 +35,92 @@ router.route("/add").post((req,res)=>{
 
 }) 
 
+//retrive all 
+router.get('/all',(req,res)=>{
 
-//View added item data
-/*
-router.get('/all',(_req,res)=>{
+  Seller.find().exec((err,seller_items)=>{
+      if(err){
+    return res.status(400).json({
+     error:err
+    });
+   }
 
-   Seller.find().exec((err,seller_items)=>{
-       if(err){
-     return res.status(400).json({
-      error:err
-     });
+    return res.status(200).json({
 
-    }
-
-     return res.status(200).json({
-
-         success:true,
-         existingPackages:seller_items
+        success:true,
+        existingItems:seller_items
 
 
-     });
+    });
 
 
-   });
+  });
 
-}); */
 
-router.route("/").get((req,res)=>{
 
-   Seller.find().then((seller_items)=>{
-   
-     res.json(seller_items)
-   
-     }).catch((err)=>{
-   
-       console.log(err)
-     })
-   
+});
+
+
+//Update 
+router.route("/update/:id").patch(async(req,res)=>{
+
+  const itm = await Seller.findById(req.params.id);
+
+if (itm) {
+
+  itm.product_id = req.body.product_id || itm.product_id;
+  itm.product_name = req.body.product_name || itm.product_name;
+  itm.description = req.body.description || itm.description;
+  itm.price = req.body.price || itm.price;
+
+  const updateItems = await itm.save();
+
+  res.json({
+
+    product_id: updateItems.product_id,
+    product_name: updateItems.product_name,
+    description: updateItems.description,
+    price: updateItems.price,
+    
+  });
+} else {
+  res.status(404);
+  
+  throw new Error("Can't Update item details");
+}
+
+
 })
 
 
-//Update Seller Added Items
-router.route("/update/:id").patch(async(req,res)=>{
+//Retrive specific item by using MongoDB item id -> Auto Generated
+router.route("/get/:id").get(async(req,res)=>{
+  const fb = await Seller.findById(req.params.id);
 
-   const pk = await Seller.findById(req.params.id);
- 
- if (pk) {
-   pk.product_name = req.body.product_name || fb.product_name;
-   pk.description = req.body.description || fb.description;
-   pk.price = req.body.price || fb.price;
+if (fb) {
+  res.json(fb);
+} else {
+  res.status(404).json({ message: "Item not found" });
+}
+})
 
-   const updateItems = await pk.save();
- 
-   res.json({
-      product_name: updateItems.name,
-      description: updateItems.destination,
-      price: updateItems.numofdays,
+
+//Delete items by uing MongoDb Id
+router.route("/delete/:id").delete(async(req,res)=>{
+
+  let itemId =req.params.id;
   
-       
-   });
- } else {
-   res.status(404);
+  await Seller.findByIdAndDelete(itemId).then(()=> {
+  
+   res.status(200).send({status: "Item Deleted"});
    
-   throw new Error("Can't Update Item Details");
- }
- 
- 
- })
+   }).catch((err)=>{
+  
+  console.log(err.message);
+  res.status(500).send({status: "Error with delete the seller's item", error:err.message});
+  
+   })
+  })
+
 
 module.exports = router;

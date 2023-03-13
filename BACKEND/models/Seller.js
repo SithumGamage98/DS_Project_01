@@ -5,7 +5,12 @@ const router = require('../routes/seller_items');
 
 const sellerItemScheama = new mongoose.Schema({
 
- 
+    product_id :{
+
+     type:String,
+     required : true
+
+    },
 
     product_name :{
 
